@@ -1,14 +1,3 @@
-// 1. Whenever a user visits your site, the app should scrape stories from a news outlet of your choice and display them for the user. Each scraped article should be saved to your application database. At a minimum, the app should scrape and display the following information for each article:
-
-//      * Headline - the title of the article
-
-//      * Summary - a short summary of the article
-
-//      * URL - the url to the original article
-
-//      * Feel free to add more content to your database (photos, bylines, and so on).
-
-// 2. Users should also be able to leave comments on the articles displayed and revisit them later. The comments should be saved to the database as well and associated with their articles. Users should also be able to delete comments left on articles. All stored comments should be visible to every user.
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
@@ -22,13 +11,17 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
-
 // Initialize Express
 var app = express();
 
-// Configure middleware
+// Handlebars
+var exphbs = require("express-handlebars");
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
+var PORT = 3000;
+
+// Configure middleware
 // Use morgan logger for logging requests
 app.use(logger("dev"));
 // Parse request body as JSON
@@ -58,10 +51,10 @@ app.get("/scrape", function(req, res) {
       // Add the text and href of every link, and save them as properties of the result object
       result.headline = $(this)
         .children("a")
-        .text().addclass("headline"); 
+        .text() 
       result.url = $(this)
         .children("a")
-        .attr("www.womenshealth.com/beauty/" + "href");
+        .attr("href");
       result.summary = $(this)
         .children("div")
         .children("p")
@@ -71,9 +64,9 @@ app.get("/scrape", function(req, res) {
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
-        .then(function(dbwomenshealth) {
+        .then(function(dbArticle) {
           // View the added result in the console
-          console.log(dbwomenshealth);
+          console.log(dbArticle);
         })
         .catch(function(err) {
           // If an error occurred, log it
@@ -90,9 +83,9 @@ app.get("/scrape", function(req, res) {
 app.get("/articles", function(req, res) {
   // Grab every document in the Articles collection
   db.Article.find({})
-    .then(function(dbwomenshealth) {
+    .then(function(dbArticle) {
       // If we were able to successfully find Articles, send them back to the client
-      res.json(dbwomenshealth);
+      res.json(dbArticle);
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
@@ -106,9 +99,9 @@ app.get("/articles/:id", function(req, res) {
   db.Article.findOne({ _id: req.params.id })
     // ..and populate all of the notes associated with it
     .populate("note")
-    .then(function(dbwomenshealth) {
+    .then(function(dbArticle) {
       // If we were able to successfully find an Article with the given id, send it back to the client
-      res.json(dbwomenshealth);
+      res.json(dbArticle);
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
@@ -126,9 +119,9 @@ app.post("/articles/:id", function(req, res) {
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
       return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     })
-    .then(function(dbwomenshealth) {
+    .then(function(dbArticle) {
       // If we were able to successfully update an Article, send it back to the client
-      res.json(dbwomenshealth);
+      res.json(dbArticle);
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
