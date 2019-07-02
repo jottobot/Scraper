@@ -1,6 +1,7 @@
 # Beauty Article Scraper
 
 ## Deployed at
+https://arctic-backbacon-25416.herokuapp.com
 
 ## Technologies used
 * HTML

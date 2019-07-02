@@ -7,6 +7,11 @@ body {
   text-align: center;
 }
 
+#jumbobtn {
+  background-color: red;
+  border-color: red;
+}
+
 #scrapedarticles {
   margin-top: 50px;
   background-color: rgba(255, 255, 255, 0.777);
@@ -14,6 +19,10 @@ body {
 #articles {
   display: inline-block;
   overflow: auto;
+}
+
+.savedbutton {
+  width: 50%;
 }
 
 .headline {
