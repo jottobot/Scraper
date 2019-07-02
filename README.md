@@ -14,6 +14,7 @@ https://arctic-backbacon-25416.herokuapp.com
 This Beauty Insider application scrapes articles from Women's Health and readily displays them on one page. The user can save certain articles and comment on them. 
 
 ## To use
+* git clone to local computer
 * open in VS code
 * open terminal and "npm i"
 * run "node server"

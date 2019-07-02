@@ -52,15 +52,8 @@ module.exports = (app) => {
         result.summary = $(this)
           .children("div")
           .children("p")
-          .text();
-
-            var btn = $('<input type="button" value="new button" class="savedbutton" />');
-          $(this).append(btn);
-
-        // var btn = $('<input type="button" value="new button" class="savedbutton" />');
-        // $(result.summary).append(btn);
-
-        // console.log(result);
+          .text()
+          .append(btn);
 
         // Create a new Article using the `result` object built from scraping
         db.Article.create(result)
@@ -78,7 +71,7 @@ module.exports = (app) => {
       res.send("Scrape Complete");
     });
 
-    res.redirect('/articles');
+    // res.redirect('/articles');
   });
 
   // Route for getting all Articles from the db
