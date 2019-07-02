@@ -1,1 +1,19 @@
-# Scraper
+# Beauty Article Scraper
+
+## Deployed at
+
+## Technologies used
+* HTML
+* Bootstrap
+* CSS
+* Javascript
+* Mongo DB
+
+## Description
+This Beauty Insider application scrapes articles from Women's Health and readily displays them on one page. The user can save certain articles and comment on them. 
+
+## To use
+* open in VS code
+* open terminal and "npm i"
+* run "node server"
+* go to localhost:3000 to view site
