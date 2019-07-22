@@ -7,7 +7,6 @@ $.getJSON("/articles", function(data) {
   }
 });
 
-// Somehow broke this and still cannot get to work
 // Clicking any "p" tag will give space to write note 
 $(document).on("click", "p", function() {
   // Empty the notes from the note section
@@ -42,20 +41,31 @@ $(document).on("click", "p", function() {
     });
 });
 
-// Save article function but could not get
-// "save article" button to append correctly
-$(document).on("click", ".savedbutton", function() {
+// When you click the savenote button
+$(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
   $.ajax({
-    method: "PUT",
+    method: "POST",
     url: "/articles/" + thisId,
+    data: {
+      // Value taken from title input
+      title: $("#titleinput").val(),
+      // Value taken from note textarea
+      body: $("#bodyinput").val()
+    }
   })
     // With that done
-    .then((data) => {
-      location.reload();
+    .then(function(data) {
+      console.log(data);
+      $("#notes").empty();
+      // location.reload();
   });
+
+  // Also, remove the values entered in the input and textarea for note entry
+  $("#titleinput").val("");
+  $("#bodyinput").val("");
 });
 
 
