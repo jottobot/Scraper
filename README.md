@@ -8,6 +8,7 @@ https://arctic-backbacon-25416.herokuapp.com
 * Bootstrap
 * CSS
 * Javascript
+* Express
 * Mongo DB
 
 ## Description
