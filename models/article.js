@@ -1,7 +1,5 @@
 var mongoose = require("mongoose");
 
-// mongoose.connect("mongodb://localhost:27017/womenshealth");
-
 // Save a reference to the Schema constructor
 var Schema = mongoose.Schema;
 
