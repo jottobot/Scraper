@@ -53,7 +53,7 @@ module.exports = (app) => {
           .children("div")
           .children("p")
           .text()
-          .append(btn);
+          // .append(btn);
 
         // Create a new Article using the `result` object built from scraping
         db.Article.create(result)
