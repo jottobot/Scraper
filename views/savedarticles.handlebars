@@ -1,4 +1,4 @@
-<div class="container">
+{{!-- <div class="container">
     {{#each article}}
         <div class="card">
             <h3 id="artCon" class="card-header">{{this.headline}}</h3>
@@ -19,4 +19,37 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content"></div>
     </div>
+</div> --}}
+
+<div class="container">
+
+    <div class="col-md-12">
+        {{#if article}}
+            {{#each article}}
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{this.title}}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p> {{this.summary}}</p>
+                        <a href={{this.link}} target="_blank">{{this.link}}</a>
+                        <br><br>
+                        <button type="button" class="btn btn-success addNote" data-toggle="modal" data-target="#noteModal{{this._id}}" data-id={{this._id}}>View/Add Notes</button>
+                        <button type="button" id="delete"class="btn btn-danger" data-id={{this._id}}>Delete</button>
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+        <div class="card">
+            <div class="card-body">
+                <h4>You currently have no saved articles.</h4>
+            </div>
+        </div>
+        {{/if}}
+    </div>
 </div>
+
+<!--Clicked Notes Modal-->
+{{#each article}}
+    {{> notes-modal }}
+{{/each}}

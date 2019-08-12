@@ -2,15 +2,14 @@ const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
-
-var axios = require("axios");
-var cheerio = require("cheerio");
-
-// Require all models
-var db = require("./models");
+const axios = require('axios');
+const cheerio = require('cheerio');
+const db = require('./models');
 
 var PORT = process.env.PORT || 3000;
 var MONGODB_URI = process.env.MONGODB_URI  || 'mongodb://localhost/womenshealth';
+// Connect to the Mongo DB
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // Initialize Express
 const app = express();
@@ -26,14 +25,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
-
-require('./routes/routes.js')(app);
-
-// Connect to the Mongo DB
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
-
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/womenshealth";
-
+// require('./routes/routes.js')(app);
 
 // Routes
 // A GET route for scraping the echoJS website
@@ -74,6 +66,142 @@ app.get("/scrape", function(req, res) {
   });
 });
 
+//GET requests to render Handlebars pages
+module.exports = (app) => {
+  // main page
+  app.get('/', (req, res) => {
+    // look for existing articles in database
+    db.Article.find({})
+      .then((dbArticle) => {
+        res.render('index');
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
+
+// Saved API
+app.get('/saved', (req, res) => {
+  db.Article.find({ saved: true })
+    .then((dbArticle) => {
+      let articleObj = { article: dbArticle };
+
+      // render page with articles found
+      res.render('savedarticles', articleObj);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
+  // Route for getting all Articles from the db
+  app.get("/articles", function (req, res) {
+    // Grab every document in the Articles collection
+    db.Article.find({})
+      .then(function (dbArticle) {
+        // If we were able to successfully find Articles, send them back to the client
+        res.json(dbArticle);
+      })
+      .catch(function (err) {
+        // If an error occurred, send it to the client
+        res.json(err);
+      });
+  });
+
+  // save article
+  app.put('/article/:id', (req, res) => {
+    let id = req.params.id;
+
+    db.Article.findByIdAndUpdate(id, { $set: { saved: true } })
+      .then((dbArticle) => {
+        res.json(dbArticle);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
+
+  // remove article from page 'saved'
+  app.put('/article/remove/:id', (req, res) => {
+    let id = req.params.id;
+
+    db.Article.findByIdAndUpdate(id, { $set: { saved: false } })
+      .then((dbArticle) => {
+        res.json(dbArticle);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
+
+  // Route for grabbing a specific Article by id, populate it with it's note
+  app.get("/article/:id", function (req, res) {
+    // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
+    db.Article.findOne({ _id: req.params.id })
+      // ..and populate all of the notes associated with it
+      .populate("note")
+      .then(function (dbArticle) {
+        // If we were able to successfully find an Article with the given id, send it back to the client
+        res.json(dbArticle);
+      })
+      .catch(function (err) {
+        // If an error occurred, send it to the client
+        res.json(err);
+      });
+  });
+
+  // get current notes
+  app.get('/article/:id', (req, res) => {
+    let id = req.params.id;
+    // cannot get notes associated with article, only the very first one
+    db.Article.findById(id)
+      .populate('note')
+      .then((dbArticle) => {
+        res.json(dbArticle);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
+
+  // save new note
+  app.post('/note/:id', (req, res) => {
+    let id = req.params.id;
+
+    db.Note.create(req.body)
+      .then((dbNote) => {
+        return db.Article.findOneAndUpdate({
+          _id: id
+        }, {
+            $push: {
+              note: dbNote._id
+            }
+          }, {
+            new: true, upsert: true
+          });
+      })
+      .then((dbArticle) => {
+        res.json(dbArticle);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
+
+  // delete note
+  app.delete('/note/:id', (req, res) => {
+    let id = req.params.id;
+
+    db.Note.remove({ _id: id })
+      .then((dbNote) => {
+        res.json({ message: 'note removed!' });
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  });
+};
+
 // // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
   // Grab every document in the Articles collection
@@ -97,6 +225,40 @@ app.get("/articles/:id", function(req, res) {
     })
     .catch(function(err) {
       res.json(err);
+    });
+});
+
+// Save an article
+app.post("/articles/save/:id", (req, res) => {
+  // query by the article id to find and update its saved boolean
+  Article.findOneAndUpdate({ _id: req.params.id }, { saved: true })
+    // execute the above query
+    .exec((err, doc) => {
+      // log any errors
+      if (err) {
+        console.log(err);
+      }
+      else {
+        // Or send the document to the browser
+        res.send(doc);
+      }
+    });
+});
+
+// Delete an article
+app.post("/articles/delete/:id", (req, res) => {
+  // Use the article id to find and update its saved boolean
+  Article.findOneAndUpdate({ _id: req.params.id }, { saved: false, notes: [] })
+    // execute the above query
+    .exec((err, doc) => {
+      // log any errors
+      if (err) {
+        console.log(err);
+      }
+      else {
+        // Or send the document to the browser
+        res.send(doc);
+      }
     });
 });
 

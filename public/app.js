@@ -7,6 +7,17 @@ $.getJSON("/articles", function(data) {
   }
 });
 
+//scrape event handler
+$("#scrape").on("click", function() {
+  $.ajax({
+      method: "GET",
+      url: "/scrape",
+  }).then(function(data) {
+      console.log(data)
+      // window.location = "/"
+  });
+});
+
 // Clicking any "p" tag will give space to write note 
 $(document).on("click", "p", function() {
   // Empty the notes from the note section
@@ -68,10 +79,13 @@ $(document).on("click", "#savenote", function() {
   $("#bodyinput").val("");
 });
 
-// function addButton () {
-//   var btn = $('<input type="button" value="Save Article" class="savedbutton" />');
-//   btn.appendTo($("p"));
-// }
-
-// $('.savedbutton').on('click', saveArticle);
-// $('.btn-remove').on('click', removeArticle);
+//save article event handler
+$("#save").on("click", function() {
+  var thisId = $(this).attr("data-id");
+  $.ajax({
+      method: "POST",
+      url: "/articles/save/" + thisId
+  }).then(function(data) {
+      window.location = "/"
+  });
+});

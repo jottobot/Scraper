@@ -10,6 +10,18 @@ body {
 #jumbobtn {
   background-color: red;
   border-color: red;
+  margin-bottom: 20px;
+
+}
+
+#sss {
+  background-color: red;
+  border-color: red;
+}
+
+#scrape {
+  background-color: red;
+  border-color: red;
 }
 
 #scrapedarticles {
