@@ -14,7 +14,7 @@ $("#scrape").on("click", function() {
       url: "/scrape",
   }).then(function(data) {
       console.log(data)
-      // window.location = "/"
+      window.location = "/"
   });
 });
 

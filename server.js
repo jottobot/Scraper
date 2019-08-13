@@ -67,7 +67,7 @@ app.get("/scrape", function(req, res) {
 });
 
 //GET requests to render Handlebars pages
-module.exports = (app) => {
+// module.exports = (app) => {
   // main page
   app.get('/', (req, res) => {
     // look for existing articles in database
@@ -78,7 +78,7 @@ module.exports = (app) => {
       .catch((err) => {
         res.json(err);
       });
-  });
+  })
 
 // Saved API
 app.get('/saved', (req, res) => {
@@ -200,7 +200,6 @@ app.get('/saved', (req, res) => {
         res.json(err);
       });
   });
-};
 
 // // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
