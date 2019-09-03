@@ -78,14 +78,3 @@ $(document).on("click", "#savenote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
-
-//save article event handler
-$("#save").on("click", function() {
-  var thisId = $(this).attr("data-id");
-  $.ajax({
-      method: "POST",
-      url: "/articles/save/" + thisId
-  }).then(function(data) {
-      window.location = "/"
-  });
-});

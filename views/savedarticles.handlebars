@@ -1,55 +1,36 @@
-{{!-- <div class="container">
-    {{#each article}}
-        <div class="card">
-            <h3 id="artCon" class="card-header">{{this.headline}}</h3>
-            <div class="row">
-                <div class="col-lg-8 card-block">
-                    <p class="card-text">{{this.summary}}</p>
-                </div>
-                <div class="col-lg-4 align-self-end text-right">
-                    <button class="btn btn-danger m-2 btn-remove" data-id="{{this._id}}">Remove</button>
-                    <button class="btn btn-success m-2 btn-view-notes" data-id="{{this._id}}">View Notes</button>
-                </div>
-            </div>
-        </div>
-    {{/each}}
-</div>
-
-<div class="modal fade">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content"></div>
-    </div>
-</div> --}}
-
 <div class="container">
 
-    <div class="col-md-12">
-        {{#if article}}
-            {{#each article}}
-                <div class="card">
-                    <div class="card-header">
-                        <h4>{{this.title}}</h4>
-                    </div>
-                    <div class="card-body">
-                        <p> {{this.summary}}</p>
-                        <a href={{this.link}} target="_blank">{{this.link}}</a>
-                        <br><br>
-                        <button type="button" class="btn btn-success addNote" data-toggle="modal" data-target="#noteModal{{this._id}}" data-id={{this._id}}>View/Add Notes</button>
-                        <button type="button" id="delete"class="btn btn-danger" data-id={{this._id}}>Delete</button>
-                    </div>
-                </div>
-            {{/each}}
-        {{else}}
-        <div class="card">
-            <div class="card-body">
-                <h4>You currently have no saved articles.</h4>
-            </div>
-        </div>
-        {{/if}}
-    </div>
+    {{!-- Article list --}}
+    <ul class="list-group">
+        {{#each articles}}
+        {{> articles/article-block}}
+        {{/each}}
+    </ul>
 </div>
 
-<!--Clicked Notes Modal-->
-{{#each article}}
-    {{> notes-modal }}
-{{/each}}
+<!-- Notes Modal -->
+<div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Article Notes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul id="notes" class="list-group scroll"></ul>
+
+            </div>
+            <div class="form-group">
+                <label for="note-text" class="font-weight-bold">Write a note!</label>
+                <textarea id="note-text-input" class="form-control" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="save-note" type="button" class="btn btn-primary" data-article-id="">Save Note</button>
+            </div>
+        </div>
+    </div>
+</div>

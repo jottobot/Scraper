@@ -11,7 +11,6 @@ body {
   background-color: red;
   border-color: red;
   margin-bottom: 20px;
-
 }
 
 #sss {
@@ -55,4 +54,18 @@ input {
 textarea {
   height: 200px;
   font-size: 18px;
+}
+
+#savenote {
+  background-color: red;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+h3 {
+  text-align: center;
+}
+
+#text {
+  font-style: bold;
 }
